@@ -50,14 +50,18 @@ public:
 	bool bThreshWithOpenCV;
 	bool bDrawPointCloud;
 	
-	int nearThreshold;
-	int farThreshold;
+	float nearThreshold;
+	float farThreshold;
 	
 	int angle;
     
     // my stuff
     int multX;
 	int multY;
+    
+    bool calibrateMode;
+    
+    image 
     
     // gui
     ofxUISuperCanvas *gui;

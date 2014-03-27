@@ -207,7 +207,7 @@ void testApp::guiEvent(ofxUIEventArgs &e)
 {
 	string name = e.getName();
 	int kind = e.getKind();
-	cout << "got event from: " << name << endl;
+	cout << kind << name << endl;
 }
 void testApp::setGUI()
 {
@@ -222,33 +222,19 @@ void testApp::setGUI()
     
     
     gui->addSpacer();
-    gui->addLabel("V SLIDERS");
-	gui->addSlider("0", 0.0, 255.0, 150, 17, 160);
-	gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-	gui->addSlider("1", 0.0, 255.0, 150, 17, 160);
-	gui->addSlider("2", 0.0, 255.0, 150, 17, 160);
-	gui->addSlider("3", 0.0, 255.0, 150, 17, 160);
-	gui->addSlider("4", 0.0, 255.0, 150, 17, 160);
-	gui->addSlider("5", 0.0, 255.0, 150, 17, 160);
-	gui->addSlider("6", 0.0, 255.0, 150, 17, 160);
-	gui->addSlider("7", 0.0, 255.0, 150, 17, 160);
-	gui->addSlider("8", 0.0, 255.0, 150, 17, 160);
+    gui->addLabel("KINECT DISTANCE");
+    gui->addSlider("1n", 0.0, 255.0, &farThreshold);
+	gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+
+	gui->addSlider("1f", 0.0, 255.0, &nearThreshold);
+
+
+
 	gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
     
     gui->addSpacer();
-	gui->addRadio("RADIO HORIZONTAL", names, OFX_UI_ORIENTATION_HORIZONTAL);
-	gui->addRadio("RADIO VERTICAL", names, OFX_UI_ORIENTATION_VERTICAL);
-    
+    gui->addLabelToggle("TEST PATTERN", &calibrateMode);
     gui->addSpacer();
-    gui->setWidgetFontSize(OFX_UI_FONT_SMALL);
-	gui->addButton("BUTTON", false);
-	gui->addToggle( "TOGGLE", false);
-    
-    gui->addSpacer();
-    gui->addLabel("KINECT1 DISTANCE");
-	gui->addRangeSlider("RSLIDER", 0.0, 255.0, 50.0, 100.0);
-    gui->addLabel("KINECT1 DISTANCE");
-	gui->addRangeSlider("RSLIDER", 0.0, 255.0, 50.0, 100.0);
     
     string textString = "SOUND IMAGE MOTION 2014";
     gui->addSpacer();
