@@ -17,12 +17,14 @@ public:
 	void exit();
 	
 	void drawPointCloud();
+    void urlResponse(ofHttpResponse & response);
 	
 	void keyPressed(int key);
 	void mouseDragged(int x, int y, int button);
 	void mousePressed(int x, int y, int button);
 	void mouseReleased(int x, int y, int button);
 	void windowResized(int w, int h);
+    
 	
 	ofxKinect kinect;
 	
@@ -39,6 +41,8 @@ public:
 	ofxKinect kinect4;
 #endif
 	
+    //Kinect 1
+    
 	ofxCvColorImage colorImg;
 	
 	ofxCvGrayscaleImage grayImage; // grayscale depth image
@@ -52,6 +56,8 @@ public:
 	
 	float nearThreshold;
 	float farThreshold;
+    float minArea;
+    float maxArea;
 	
 	int angle;
     
@@ -61,7 +67,10 @@ public:
     
     bool calibrateMode;
     
-    image 
+    ofImage testPattern;
+    
+    
+
     
     // gui
     ofxUISuperCanvas *gui;

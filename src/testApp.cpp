@@ -65,11 +65,16 @@ void testApp::setup() {
     setGUI();
     gui->loadSettings("GUI/guiSettings.xml");
     
+    testPattern.loadImage("images/testpattern.jpg");
+    
+    //ofRegisterURLNotification(this);
+    
 }
 
 //--------------------------------------------------------------
 void testApp::update() {
 	ofBackground(0, 0, 0);
+    //ofBackground(255);
 	
 	kinect.update();
 	
@@ -107,7 +112,7 @@ void testApp::update() {
 		
 		// find contours which are between the size of 20 pixels and 1/3 the w*h pixels.
 		// also, find holes is set to true so we will get interior contours as well....
-		contourFinder.findContours(grayImage, 10, (kinect.width*kinect.height)/2, 20, false);
+		contourFinder.findContours(grayImage, minArea, maxArea, 1, false);
 	}
 	
 #ifdef USE_TWO_KINECTS
@@ -122,14 +127,21 @@ void testApp::update() {
     kinect3.update();
 	kinect4.update();
 #endif
+    
+   // ofHttpResponse resp = ofLoadURL("http://www.google.com/robots.txt");
+    //cout << resp.data << endl;
+    
+    
 }
 
 //--------------------------------------------------------------
 void testApp::draw() {
     
+    ofSetColor(255);
+	if(calibrateMode)testPattern.draw(0, 0, ofGetScreenWidth()*2, ofGetScreenHeight());
     
 	
-	ofSetColor(255, 255, 255);
+
 	
 	if(bDrawPointCloud) {
 		easyCam.begin();
@@ -174,6 +186,8 @@ void testApp::draw() {
     }
     
 	ofDrawBitmapString(reportStream.str(), 20, 652);
+    
+
     
     
 }
@@ -222,11 +236,13 @@ void testApp::setGUI()
     
     
     gui->addSpacer();
-    gui->addLabel("KINECT DISTANCE");
-    gui->addSlider("1n", 0.0, 255.0, &farThreshold);
+    gui->addLabel("KINECT 1");
+    gui->addSlider("Near threshold", 0.0, 255.0, &farThreshold);
 	gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-
-	gui->addSlider("1f", 0.0, 255.0, &nearThreshold);
+	gui->addSlider("Far threshold", 0.0, 255.0, &nearThreshold);
+    gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+    gui->addSlider("Min Area", 0.0, (kinect.width*kinect.height)/2, &minArea);
+    gui->addSlider("Max Area", 0.0, (kinect.width*kinect.height)/2, &maxArea);
 
 
 

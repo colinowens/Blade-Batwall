@@ -8,11 +8,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/testApp.cpp"
-         timestampString = "417585232.6224"
+         timestampString = "417587743.775918"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "229"
-         endingLineNumber = "229"
+         startingLineNumber = "242"
+         endingLineNumber = "242"
          landmarkName = "testApp::setGUI()"
          landmarkType = "5">
       </FileBreakpoint>
