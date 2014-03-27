@@ -612,7 +612,7 @@
 			isa = PBXGroup;
 			children = (
 				CD5C638718DFD13E008FC783 /* ofxXmlSettings */,
-				CD5C62FC18DFD100008FC783 /* src */,
+				CD5C62FC18DFD100008FC783 /* ofxUI */,
 				9683228c705ca3ff4f2ea945 /* ofxKinect */,
 				a0b90d3b0adb9c1716816714 /* ofxOpenCv */,
 			);
@@ -649,7 +649,7 @@
 			name = "3rd party frameworks";
 			sourceTree = "<group>";
 		};
-		CD5C62FC18DFD100008FC783 /* src */ = {
+		CD5C62FC18DFD100008FC783 /* ofxUI */ = {
 			isa = PBXGroup;
 			children = (
 				CD5C62FD18DFD100008FC783 /* ofxUI.h */,
@@ -747,7 +747,7 @@
 				CD5C635918DFD100008FC783 /* ofxUIWidgetWithLabel.h */,
 				CD5C635A18DFD100008FC783 /* ofxUIWrapper.h */,
 			);
-			name = src;
+			name = ofxUI;
 			path = "../../ofxUI-master/src";
 			sourceTree = "<group>";
 		};

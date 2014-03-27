@@ -60,9 +60,8 @@ public:
 	int multY;
     
     // gui
-    ofxUISuperCanvas *gui1;
-    void setGUI1();
-    float red, green, blue;
+    ofxUISuperCanvas *gui;
+    void setGUI();
     void guiEvent(ofxUIEventArgs &e);
     
 	// used for viewing the point cloud

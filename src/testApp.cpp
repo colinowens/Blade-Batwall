@@ -7,16 +7,13 @@
 void testApp::setup() {
 	ofSetLogLevel(OF_LOG_VERBOSE);
 	
-	// enable depth->video image calibration
 	kinect.setRegistration(true);
     
-	kinect.init();
+	kinect.init(false,false);
 	//kinect.init(true); // shows infrared instead of RGB video image
 	//kinect.init(false, false); // disable video image (faster fps)
 	
-	kinect.open();		// opens first available kinect
-	//kinect.open(1);	// open a kinect by id, starting with 0 (sorted by serial # lexicographically))
-	//kinect.open("A00362A08602047A");	// open a kinect using it's unique serial #
+	kinect.open("B00364721963039B");	// open a kinect using it's unique serial #
 	
 	// print the intrinsic IR sensor values
 	if(kinect.isConnected()) {
@@ -65,14 +62,13 @@ void testApp::setup() {
     
     // GUI
     
-    setGUI1();
-    gui1->loadSettings("gui1Settings.xml");
+    setGUI();
+    gui->loadSettings("GUI/guiSettings.xml");
     
 }
 
 //--------------------------------------------------------------
 void testApp::update() {
-	//ofSetWindowShape(3000, 1000);
 	ofBackground(0, 0, 0);
 	
 	kinect.update();
@@ -213,62 +209,62 @@ void testApp::guiEvent(ofxUIEventArgs &e)
 	int kind = e.getKind();
 	cout << "got event from: " << name << endl;
 }
-void testApp::setGUI1()
+void testApp::setGUI()
 {
     vector<string> names;
 	names.push_back("RAD1");
 	names.push_back("RAD2");
 	names.push_back("RAD3");
-	
-	gui1 = new ofxUISuperCanvas("PANEL 1: BASICS");
-    gui1->addSpacer();
-    gui1->addLabel("Press 'h' to Hide GUIs", OFX_UI_FONT_SMALL);
     
-    gui1->addSpacer();
-	gui1->addLabel("H SLIDERS");
-	gui1->addSlider("RED", 0.0, 255.0, &red)->setTriggerType(OFX_UI_TRIGGER_ALL);
-	gui1->addSlider("GREEN", 0.0, 255.0, &green)->setTriggerType(OFX_UI_TRIGGER_BEGIN|OFX_UI_TRIGGER_CHANGE|OFX_UI_TRIGGER_END);
-	gui1->addSlider("BLUE", 0.0, 255.0, &blue)->setTriggerType(OFX_UI_TRIGGER_BEGIN|OFX_UI_TRIGGER_CHANGE);
+	gui = new ofxUISuperCanvas("Setup",1000,0,300,300);
+    gui->addSpacer();
+    gui->addLabel("Press 'g' to Hide GUIs", OFX_UI_FONT_SMALL);
     
-    gui1->addSpacer();
-    gui1->addLabel("V SLIDERS");
-	gui1->addSlider("0", 0.0, 255.0, 150, 17, 160);
-	gui1->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
-	gui1->addSlider("1", 0.0, 255.0, 150, 17, 160);
-	gui1->addSlider("2", 0.0, 255.0, 150, 17, 160);
-	gui1->addSlider("3", 0.0, 255.0, 150, 17, 160);
-	gui1->addSlider("4", 0.0, 255.0, 150, 17, 160);
-	gui1->addSlider("5", 0.0, 255.0, 150, 17, 160);
-	gui1->addSlider("6", 0.0, 255.0, 150, 17, 160);
-	gui1->addSlider("7", 0.0, 255.0, 150, 17, 160);
-	gui1->addSlider("8", 0.0, 255.0, 150, 17, 160);
-	gui1->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
     
-    gui1->addSpacer();
-	gui1->addRadio("RADIO HORIZONTAL", names, OFX_UI_ORIENTATION_HORIZONTAL);
-	gui1->addRadio("RADIO VERTICAL", names, OFX_UI_ORIENTATION_VERTICAL);
+    gui->addSpacer();
+    gui->addLabel("V SLIDERS");
+	gui->addSlider("0", 0.0, 255.0, 150, 17, 160);
+	gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_RIGHT);
+	gui->addSlider("1", 0.0, 255.0, 150, 17, 160);
+	gui->addSlider("2", 0.0, 255.0, 150, 17, 160);
+	gui->addSlider("3", 0.0, 255.0, 150, 17, 160);
+	gui->addSlider("4", 0.0, 255.0, 150, 17, 160);
+	gui->addSlider("5", 0.0, 255.0, 150, 17, 160);
+	gui->addSlider("6", 0.0, 255.0, 150, 17, 160);
+	gui->addSlider("7", 0.0, 255.0, 150, 17, 160);
+	gui->addSlider("8", 0.0, 255.0, 150, 17, 160);
+	gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
     
-    gui1->addSpacer();
-    gui1->setWidgetFontSize(OFX_UI_FONT_SMALL);
-	gui1->addButton("BUTTON", false);
-	gui1->addToggle( "TOGGLE", false);
+    gui->addSpacer();
+	gui->addRadio("RADIO HORIZONTAL", names, OFX_UI_ORIENTATION_HORIZONTAL);
+	gui->addRadio("RADIO VERTICAL", names, OFX_UI_ORIENTATION_VERTICAL);
     
-    gui1->addSpacer();
-    gui1->addLabel("RANGE SLIDER");
-	gui1->addRangeSlider("RSLIDER", 0.0, 255.0, 50.0, 100.0);
+    gui->addSpacer();
+    gui->setWidgetFontSize(OFX_UI_FONT_SMALL);
+	gui->addButton("BUTTON", false);
+	gui->addToggle( "TOGGLE", false);
     
-    string textString = "This widget is a text area widget. Use this when you need to display a paragraph of text. It takes care of formatting the text to fit the block.";
-    gui1->addSpacer();
+    gui->addSpacer();
+    gui->addLabel("KINECT1 DISTANCE");
+	gui->addRangeSlider("RSLIDER", 0.0, 255.0, 50.0, 100.0);
+    gui->addLabel("KINECT1 DISTANCE");
+	gui->addRangeSlider("RSLIDER", 0.0, 255.0, 50.0, 100.0);
     
-    gui1->addTextArea("textarea", textString, OFX_UI_FONT_SMALL);
+    string textString = "SOUND IMAGE MOTION 2014";
+    gui->addSpacer();
     
-    gui1->autoSizeToFitWidgets();
-	ofAddListener(gui1->newGUIEvent,this,&testApp::guiEvent);
+    gui->addTextArea("textarea", textString, OFX_UI_FONT_SMALL);
+    
+    gui->autoSizeToFitWidgets();
+	ofAddListener(gui->newGUIEvent,this,&testApp::guiEvent);
 }
 
 
 //--------------------------------------------------------------
 void testApp::exit() {
+    gui->saveSettings("GUI/guiSettings.xml");
+    delete gui;
+    
 	kinect.setCameraTiltAngle(0); // zero the tilt on exit
 	kinect.close();
 	
@@ -284,6 +280,7 @@ void testApp::exit() {
     kinect3.close();
     kinect4.close();
 #endif
+    
 }
 
 //--------------------------------------------------------------
@@ -372,6 +369,12 @@ void testApp::keyPressed (int key) {
         case 'f':
             ofToggleFullscreen();
         break;
+        case 'g':
+            gui->toggleVisible();
+            break;
+            case 's':
+            gui->saveSettings("GUI/guiSettings.xml");
+        break;
 	}
 }
 
@@ -388,6 +391,4 @@ void testApp::mouseReleased(int x, int y, int button)
 
 //--------------------------------------------------------------
 void testApp::windowResized(int w, int h)
-{
-    ofSetWindowShape(100, 100);
-}
+{}
