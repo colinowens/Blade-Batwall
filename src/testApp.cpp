@@ -6,34 +6,29 @@
 //--------------------------------------------------------------
 void testApp::setup() {
     
-#ifdef USE_ONE_KINECT
+
 	//ofSetLogLevel(OF_LOG_VERBOSE);
 	kinect.setRegistration(true);
 	kinect.init(false,false);
-    kinect.open("B00364721963039B");	// open a kinect using it's unique serial #
-	if(kinect.isConnected()) {
-		ofLogNotice() << "sensor-emitter dist: " << kinect.getSensorEmitterDistance() << "cm";
-		ofLogNotice() << "sensor-camera dist:  " << kinect.getSensorCameraDistance() << "cm";
-		ofLogNotice() << "zero plane pixel size: " << kinect.getZeroPlanePixelSize() << "mm";
-		ofLogNotice() << "zero plane dist: " << kinect.getZeroPlaneDistance() << "mm";
-	}
-#endif
+    kinect.open("A70775V00980314A");	// open a kinect using its unique serial #
+
+
 #ifdef USE_TWO_KINECTS
-	kinect2.init();
-	kinect2.open();
+	kinect2.init(false,false);
+	kinect2.open("A70771V01182315A");
 #endif
 #ifdef USE_THREE_KINECTS
-	kinect2.init();
+	kinect2.init(false,false);
 	kinect2.open();
-    kinect3.init();
+    kinect3.init(false,false);
 	kinect3.open();
 #endif
 #ifdef USE_FOUR_KINECTS
-    kinect2.init();
+    kinect2.init(false,false);
 	kinect2.open();
-    kinect3.init();
+    kinect3.init(false,false);
 	kinect3.open();
-	kinect4.init();
+	kinect4.init(false,false);
 	kinect4.open();
 #endif
 #ifdef USE_ONE_KINECT
@@ -72,7 +67,6 @@ void testApp::update() {
 
 //	ofBackground(0, 0, 0);
     
-#ifdef USE_ONE_KINECT
     kinect.update();
 	if(kinect.isFrameNew()) {
 		grayImage.setFromPixels(kinect.getDepthPixels(), kinect.width, kinect.height);
@@ -98,7 +92,6 @@ void testApp::update() {
 		grayImage.flagImageChanged();
 		contourFinder.findContours(grayImage, minArea, maxArea, 1, false);
 	}
-#endif
 	
 #ifdef USE_TWO_KINECTS
 	kinect2.update();
@@ -130,20 +123,20 @@ void testApp::draw() {
 	
     
 	
-#ifdef USE_ONE_KINECT
+
     // draw from the live kinect
     kinect.drawDepth(10, 10, 400, 300);
     kinect.draw(2420, 10, 400, 300);
     
     grayImage.draw(10, 320, 400, 300);
     contourFinder.draw(10, 320, 400, 300);
-#endif
+
 #ifdef USE_TWO_KINECTS
     kinect.draw(2420, 10, 400, 300);
     kinect2.draw(420, 320, 400, 300);
 #endif
 	
-#ifdef USE_ONE_KINECT
+
 	// draw instructions
 	ofSetColor(255, 255, 255);
 	stringstream reportStream;
@@ -170,9 +163,9 @@ void testApp::draw() {
     }
     
 	ofDrawBitmapString(reportStream.str(), 20, 652);
-#endif
-    fbo.end();
-    bezel.draw(&fbo);
+
+    fbo.end(); // these two lines of code
+    bezel.draw(&fbo); // go at the very end
     
     
 }
@@ -201,10 +194,10 @@ void testApp::setGUI()
 	gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
 	gui->addSlider("Far threshold", 0.0, 255.0, &nearThreshold);
     gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
-#ifdef USE_ONE_KINECT
+
     gui->addSlider("Min Area", 0.0, (kinect.width*kinect.height)/2, &minArea);
     gui->addSlider("Max Area", 0.0, (kinect.width*kinect.height)/2, &maxArea);
-#endif
+
     
     
 	gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
@@ -213,6 +206,8 @@ void testApp::setGUI()
     gui->addSpacer();
     gui->addLabelToggle("CALIBRATE", &bezelHelperMode);
     gui->addSpacer();
+
+
     string textString = "SOUND IMAGE MOTION 2014";
     gui->addSpacer();
     gui->addTextArea("textarea", textString, OFX_UI_FONT_SMALL);
@@ -226,10 +221,10 @@ void testApp::exit() {
     gui->saveSettings("GUI/guiSettings.xml");
     delete gui;
 	
-#ifdef USE_ONE_KINECT
+
 	kinect.setCameraTiltAngle(0); // zero the tilt on exit
 	kinect.close();
-#endif
+
 #ifdef USE_TWO_KINECTS
 	kinect2.close();
 #endif
