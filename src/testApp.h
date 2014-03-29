@@ -1,9 +1,11 @@
 #pragma once
+#define USE_ONE_KINECT	
 
 #include "ofMain.h"
 #include "ofxOpenCv.h"
 #include "ofxKinect.h"
 #include "ofxUI.h"
+#include "ofxBezel.h"
 
 // uncomment this to read from two kinects simultaneously
 //#define USE_TWO_KINECTS
@@ -26,8 +28,13 @@ public:
 	void windowResized(int w, int h);
     
 	
-	ofxKinect kinect;
-	
+
+    
+#ifdef USE_NO_KINECT
+#endif
+#ifdef USE_ONE_KINECT
+    ofxKinect kinect;
+#endif
 #ifdef USE_TWO_KINECTS
 	ofxKinect kinect2;
 #endif
@@ -66,8 +73,10 @@ public:
 	int multY;
     
     bool calibrateMode;
+    bool bezelHelperMode;
     
     ofImage testPattern;
+    ofImage bezelHelper;
     
     
 
@@ -79,4 +88,10 @@ public:
     
 	// used for viewing the point cloud
 	ofEasyCam easyCam;
+    
+    // bezel
+    
+    ofFbo fbo;
+    ofxBezel bezel;
+    ofVideoPlayer player;
 };

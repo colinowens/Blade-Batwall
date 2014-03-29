@@ -8,7 +8,7 @@
 <Widget>
     <Kind>4</Kind>
     <Name>Near threshold</Name>
-    <Value>248.886978149</Value>
+    <Value>241.027389526</Value>
 </Widget>
 <Widget>
     <Kind>4</Kind>
@@ -18,15 +18,20 @@
 <Widget>
     <Kind>4</Kind>
     <Name>Min Area</Name>
-    <Value>8416.438476562</Value>
+    <Value>0.000000000</Value>
 </Widget>
 <Widget>
     <Kind>4</Kind>
     <Name>Max Area</Name>
-    <Value>19463.011718750</Value>
+    <Value>26827.398437500</Value>
 </Widget>
 <Widget>
     <Kind>17</Kind>
     <Name>TEST PATTERN</Name>
+    <Value>0</Value>
+</Widget>
+<Widget>
+    <Kind>17</Kind>
+    <Name>CALIBRATE</Name>
     <Value>0</Value>
 </Widget>

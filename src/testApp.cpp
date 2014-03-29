@@ -5,24 +5,19 @@
 
 //--------------------------------------------------------------
 void testApp::setup() {
-	ofSetLogLevel(OF_LOG_VERBOSE);
-	
-	kinect.setRegistration(true);
     
+#ifdef USE_ONE_KINECT
+	//ofSetLogLevel(OF_LOG_VERBOSE);
+	kinect.setRegistration(true);
 	kinect.init(false,false);
-	//kinect.init(true); // shows infrared instead of RGB video image
-	//kinect.init(false, false); // disable video image (faster fps)
-	
-	kinect.open("B00364721963039B");	// open a kinect using it's unique serial #
-	
-	// print the intrinsic IR sensor values
+    kinect.open("B00364721963039B");	// open a kinect using it's unique serial #
 	if(kinect.isConnected()) {
 		ofLogNotice() << "sensor-emitter dist: " << kinect.getSensorEmitterDistance() << "cm";
 		ofLogNotice() << "sensor-camera dist:  " << kinect.getSensorCameraDistance() << "cm";
 		ofLogNotice() << "zero plane pixel size: " << kinect.getZeroPlanePixelSize() << "mm";
 		ofLogNotice() << "zero plane dist: " << kinect.getZeroPlaneDistance() << "mm";
 	}
-	
+#endif
 #ifdef USE_TWO_KINECTS
 	kinect2.init();
 	kinect2.open();
@@ -41,7 +36,7 @@ void testApp::setup() {
 	kinect4.init();
 	kinect4.open();
 #endif
-	
+#ifdef USE_ONE_KINECT
 	colorImg.allocate(kinect.width, kinect.height);
 	grayImage.allocate(kinect.width, kinect.height);
 	grayThreshNear.allocate(kinect.width, kinect.height);
@@ -56,9 +51,7 @@ void testApp::setup() {
 	// zero the tilt on startup
 	angle = 0;
 	kinect.setCameraTiltAngle(angle);
-	
-	// start from the front
-	bDrawPointCloud = false;
+#endif
     
     // GUI
     
@@ -66,26 +59,23 @@ void testApp::setup() {
     gui->loadSettings("GUI/guiSettings.xml");
     
     testPattern.loadImage("images/testpattern.jpg");
+    bezelHelper.loadImage("images/bezelHelper.png");
     
-    //ofRegisterURLNotification(this);
+    fbo.allocate(ofGetWidth(), ofGetHeight());
+    bezel.setup(0.0f, 150.0f, 0, 2);
+    
     
 }
 
 //--------------------------------------------------------------
 void testApp::update() {
-	ofBackground(0, 0, 0);
-    //ofBackground(255);
-	
-	kinect.update();
-	
-	// there is a new frame and we are connected
+
+//	ofBackground(0, 0, 0);
+    
+#ifdef USE_ONE_KINECT
+    kinect.update();
 	if(kinect.isFrameNew()) {
-		
-		// load grayscale depth image from the kinect source
 		grayImage.setFromPixels(kinect.getDepthPixels(), kinect.width, kinect.height);
-		
-		// we do two thresholds - one for the far plane and one for the near plane
-		// we then do a cvAnd to get the pixels which are a union of the two thresholds
 		if(bThreshWithOpenCV) {
 			grayThreshNear = grayImage;
 			grayThreshFar = grayImage;
@@ -93,7 +83,6 @@ void testApp::update() {
 			grayThreshFar.threshold(farThreshold);
 			cvAnd(grayThreshNear.getCvImage(), grayThreshFar.getCvImage(), grayImage.getCvImage(), NULL);
 		} else {
-			
 			// or we do it ourselves - show people how they can work with the pixels
 			unsigned char * pix = grayImage.getPixels();
 			
@@ -106,14 +95,10 @@ void testApp::update() {
 				}
 			}
 		}
-		
-		// update the cv images
 		grayImage.flagImageChanged();
-		
-		// find contours which are between the size of 20 pixels and 1/3 the w*h pixels.
-		// also, find holes is set to true so we will get interior contours as well....
 		contourFinder.findContours(grayImage, minArea, maxArea, 1, false);
 	}
+#endif
 	
 #ifdef USE_TWO_KINECTS
 	kinect2.update();
@@ -128,42 +113,41 @@ void testApp::update() {
 	kinect4.update();
 #endif
     
-   // ofHttpResponse resp = ofLoadURL("http://www.google.com/robots.txt");
-    //cout << resp.data << endl;
     
     
 }
 
 //--------------------------------------------------------------
 void testApp::draw() {
+    fbo.begin(); // put all your code after this line
+    
+    ofBackground(0, 0, 0);
     
     ofSetColor(255);
 	if(calibrateMode)testPattern.draw(0, 0, ofGetScreenWidth()*2, ofGetScreenHeight());
+    if(bezelHelperMode)bezelHelper.draw(0, 0, ofGetScreenWidth()*2, ofGetScreenHeight());
     
 	
-
+    
 	
-	if(bDrawPointCloud) {
-		easyCam.begin();
-		drawPointCloud();
-		easyCam.end();
-	} else {
-		// draw from the live kinect
-		kinect.drawDepth(10, 10, 400, 300);
-		kinect.draw(2420, 10, 400, 300);
-		
-		grayImage.draw(10, 320, 400, 300);
-		contourFinder.draw(10, 320, 400, 300);
-		
-#ifdef USE_TWO_KINECTS
-		kinect2.draw(420, 320, 400, 300);
+#ifdef USE_ONE_KINECT
+    // draw from the live kinect
+    kinect.drawDepth(10, 10, 400, 300);
+    kinect.draw(2420, 10, 400, 300);
+    
+    grayImage.draw(10, 320, 400, 300);
+    contourFinder.draw(10, 320, 400, 300);
 #endif
-	}
+#ifdef USE_TWO_KINECTS
+    kinect.draw(2420, 10, 400, 300);
+    kinect2.draw(420, 320, 400, 300);
+#endif
 	
+#ifdef USE_ONE_KINECT
 	// draw instructions
 	ofSetColor(255, 255, 255);
 	stringstream reportStream;
-        
+    
     if(kinect.hasAccelControl()) {
         reportStream << "accel is: " << ofToString(kinect.getMksAccel().x, 2) << " / "
         << ofToString(kinect.getMksAccel().y, 2) << " / "
@@ -179,42 +163,18 @@ void testApp::draw() {
 	<< "set far threshold " << farThreshold << " (press: < >) num blobs found " << contourFinder.nBlobs
 	<< ", fps: " << ofGetFrameRate() << endl
 	<< "press c to close the connection and o to open it again, connection is: " << kinect.isConnected() << endl;
-
+    
     if(kinect.hasCamTiltControl()) {
     	reportStream << "press UP and DOWN to change the tilt angle: " << angle << " degrees" << endl
         << "press 1-5 & 0 to change the led mode" << endl;
     }
     
 	ofDrawBitmapString(reportStream.str(), 20, 652);
+#endif
+    fbo.end();
+    bezel.draw(&fbo);
     
-
     
-    
-}
-
-void testApp::drawPointCloud() {
-	int w = 640;
-	int h = 480;
-	ofMesh mesh;
-	mesh.setMode(OF_PRIMITIVE_POINTS);
-	int step = 2;
-	for(int y = 0; y < h; y += step) {
-		for(int x = 0; x < w; x += step) {
-			if(kinect.getDistanceAt(x, y) > 0) {
-				mesh.addColor(kinect.getColorAt(x,y));
-				mesh.addVertex(kinect.getWorldCoordinateAt(x, y));
-			}
-		}
-	}
-	glPointSize(3);
-	ofPushMatrix();
-	// the projected points are 'upside down' and 'backwards' 
-	ofScale(1, -1, -1);
-	ofTranslate(0, 0, -1000); // center the points a bit
-	ofEnableDepthTest();
-	mesh.drawVertices();
-	ofDisableDepthTest();
-	ofPopMatrix();
 }
 
 void testApp::guiEvent(ofxUIEventArgs &e)
@@ -241,22 +201,21 @@ void testApp::setGUI()
 	gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
 	gui->addSlider("Far threshold", 0.0, 255.0, &nearThreshold);
     gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+#ifdef USE_ONE_KINECT
     gui->addSlider("Min Area", 0.0, (kinect.width*kinect.height)/2, &minArea);
     gui->addSlider("Max Area", 0.0, (kinect.width*kinect.height)/2, &maxArea);
-
-
-
-	gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
+#endif
     
+    
+	gui->setWidgetPosition(OFX_UI_WIDGET_POSITION_DOWN);
     gui->addSpacer();
     gui->addLabelToggle("TEST PATTERN", &calibrateMode);
     gui->addSpacer();
-    
+    gui->addLabelToggle("CALIBRATE", &bezelHelperMode);
+    gui->addSpacer();
     string textString = "SOUND IMAGE MOTION 2014";
     gui->addSpacer();
-    
     gui->addTextArea("textarea", textString, OFX_UI_FONT_SMALL);
-    
     gui->autoSizeToFitWidgets();
 	ofAddListener(gui->newGUIEvent,this,&testApp::guiEvent);
 }
@@ -266,10 +225,11 @@ void testApp::setGUI()
 void testApp::exit() {
     gui->saveSettings("GUI/guiSettings.xml");
     delete gui;
-    
+	
+#ifdef USE_ONE_KINECT
 	kinect.setCameraTiltAngle(0); // zero the tilt on exit
 	kinect.close();
-	
+#endif
 #ifdef USE_TWO_KINECTS
 	kinect2.close();
 #endif
@@ -320,63 +280,63 @@ void testApp::keyPressed (int key) {
 			break;
 			
 		case 'w':
-			kinect.enableDepthNearValueWhite(!kinect.isDepthNearValueWhite());
+		//	kinect.enableDepthNearValueWhite(!kinect.isDepthNearValueWhite());
 			break;
 			
 		case 'o':
-			kinect.setCameraTiltAngle(angle); // go back to prev tilt
-			kinect.open();
+		//	kinect.setCameraTiltAngle(angle); // go back to prev tilt
+		//	kinect.open();
 			break;
 			
 		case 'c':
-			kinect.setCameraTiltAngle(0); // zero the tilt
-			kinect.close();
+		//	kinect.setCameraTiltAngle(0); // zero the tilt
+		//	kinect.close();
 			break;
 			
 		case '1':
-			kinect.setLed(ofxKinect::LED_GREEN);
+		//	kinect.setLed(ofxKinect::LED_GREEN);
 			break;
 			
 		case '2':
-			kinect.setLed(ofxKinect::LED_YELLOW);
+		//	kinect.setLed(ofxKinect::LED_YELLOW);
 			break;
 			
 		case '3':
-			kinect.setLed(ofxKinect::LED_RED);
+		//	kinect.setLed(ofxKinect::LED_RED);
 			break;
 			
 		case '4':
-			kinect.setLed(ofxKinect::LED_BLINK_GREEN);
+		//	kinect.setLed(ofxKinect::LED_BLINK_GREEN);
 			break;
 			
 		case '5':
-			kinect.setLed(ofxKinect::LED_BLINK_YELLOW_RED);
+		//	kinect.setLed(ofxKinect::LED_BLINK_YELLOW_RED);
 			break;
 			
 		case '0':
-			kinect.setLed(ofxKinect::LED_OFF);
+		//	kinect.setLed(ofxKinect::LED_OFF);
 			break;
 			
 		case OF_KEY_UP:
 			angle++;
 			if(angle>30) angle=30;
-			kinect.setCameraTiltAngle(angle);
+		//	kinect.setCameraTiltAngle(angle);
 			break;
 			
 		case OF_KEY_DOWN:
 			angle--;
 			if(angle<-30) angle=-30;
-			kinect.setCameraTiltAngle(angle);
+		//	kinect.setCameraTiltAngle(angle);
 			break;
         case 'f':
             ofToggleFullscreen();
-        break;
+            break;
         case 'g':
             gui->toggleVisible();
             break;
-            case 's':
+        case 's':
             gui->saveSettings("GUI/guiSettings.xml");
-        break;
+            break;
 	}
 }
 
