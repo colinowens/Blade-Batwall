@@ -1,5 +1,8 @@
 #pragma once
-#define USE_ONE_KINECT
+
+#define ALL_KINECTS
+
+//#define ALL_KINECTS
 
 #include "ofMain.h"
 #include "ofxOpenCv.h"
@@ -28,56 +31,69 @@ public:
 	void windowResized(int w, int h);
     
 	
-
-    
-
-
-    ofxKinect kinect;
-
-#ifdef USE_TWO_KINECTS
-	ofxKinect kinect2;
-#endif
-#ifdef USE_THREE_KINECTS
-    ofxKinect kinect2;
-	ofxKinect kinect3;
-#endif
-#ifdef USE_FOUR_KINECTS
-    ofxKinect kinect2;
-	ofxKinect kinect3;
-	ofxKinect kinect4;
-#endif
-	
     //Kinect 1
     
-	ofxCvColorImage colorImg;
-	
-	ofxCvGrayscaleImage grayImage; // grayscale depth image
-	ofxCvGrayscaleImage grayThreshNear; // the near thresholded image
-	ofxCvGrayscaleImage grayThreshFar; // the far thresholded image
-	
-	ofxCvContourFinder contourFinder;
-	
-	bool bThreshWithOpenCV;
-	bool bDrawPointCloud;
-	
-	float nearThreshold;
-	float farThreshold;
-    float minArea;
-    float maxArea;
-	
-	int angle;
+    ofxKinect kinect1;
+    //ofxCvColorImage colorImg1;
+    ofxCvGrayscaleImage grayImage1;
+    ofxCvGrayscaleImage grayThreshNear1;
+    ofxCvGrayscaleImage grayThreshFar1;
+    ofxCvContourFinder contourFinder1;
+    bool bThreshWithOpenCV1;
+    bool bDrawPointCloud1;
+    float nearThreshold1;
+    float farThreshold1;
+    float minArea1;
+    float maxArea1;
+    int kinect1X = 0;
+    int kinect1Y = 0;
+    int kinect1W = 400;
+    int kinect1H = 300;
+    ofRectangle cur;
     
+#ifdef ALL_KINECTS
+    //Kinect 2
+    
+    ofxKinect kinect2;
+    //ofxCvColorImage colorImg2;
+    ofxCvGrayscaleImage grayImage2;
+    ofxCvGrayscaleImage grayThreshNear2;
+    ofxCvGrayscaleImage grayThreshFar2;
+    ofxCvContourFinder contourFinder2;
+    bool bThreshWithOpenCV2;
+    bool bDrawPointCloud2;
+    float nearThreshold2;
+    float farThreshold2;
+    float minArea2;
+    float maxArea2;
+ #endif
+      
     // my stuff
     int multX;
 	int multY;
     
     bool calibrateMode;
     bool bezelHelperMode;
+    bool bKinectImage;
+    bool bCVImage;
+    bool bCentroid;
+    bool bScreenOrderMode;
+    
     
     ofImage testPattern;
     ofImage bezelHelper;
     
     
+    ofSerial	serial;
+    string sss;
+    
+    float gapWidth =140;
+    
+    int pointerX;
+    int pointerY;
+    
+    int projectorWidth;
+    int projectorHeight;
 
     
     // gui
@@ -85,8 +101,6 @@ public:
     void setGUI();
     void guiEvent(ofxUIEventArgs &e);
     
-	// used for viewing the point cloud
-	ofEasyCam easyCam;
     
     // bezel
     
