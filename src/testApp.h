@@ -1,5 +1,5 @@
 #pragma once
-#define USE_ONE_KINECT
+#define USE_TWO_KINECTS
 
 #include "ofMain.h"
 #include "ofxOpenCv.h"

@@ -1,5 +1,6 @@
 #include "testApp.h"
 
+
 // I made a comment!!!!
 
 
@@ -15,7 +16,7 @@ void testApp::setup() {
 
 #ifdef USE_TWO_KINECTS
 	kinect2.init(false,false);
-	kinect2.open("A70771V01182315A");
+	kinect2.open();
 #endif
 #ifdef USE_THREE_KINECTS
 	kinect2.init(false,false);
