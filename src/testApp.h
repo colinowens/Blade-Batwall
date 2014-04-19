@@ -2,7 +2,7 @@
 
 #define ALL_KINECTS
 
-//#define ALL_KINECTS
+
 
 #include "ofMain.h"
 #include "ofxOpenCv.h"
@@ -29,12 +29,10 @@ public:
 	void mousePressed(int x, int y, int button);
 	void mouseReleased(int x, int y, int button);
 	void windowResized(int w, int h);
-    
 	
     //Kinect 1
     
     ofxKinect kinect1;
-    //ofxCvColorImage colorImg1;
     ofxCvGrayscaleImage grayImage1;
     ofxCvGrayscaleImage grayThreshNear1;
     ofxCvGrayscaleImage grayThreshFar1;
@@ -49,13 +47,12 @@ public:
     int kinect1Y = 0;
     int kinect1W = 400;
     int kinect1H = 300;
-    ofRectangle cur;
+    ofRectangle cur1;
     
 #ifdef ALL_KINECTS
     //Kinect 2
     
     ofxKinect kinect2;
-    //ofxCvColorImage colorImg2;
     ofxCvGrayscaleImage grayImage2;
     ofxCvGrayscaleImage grayThreshNear2;
     ofxCvGrayscaleImage grayThreshFar2;
@@ -66,11 +63,16 @@ public:
     float farThreshold2;
     float minArea2;
     float maxArea2;
+    int kinect2X = 0;
+    int kinect2Y = 0;
+    int kinect2W = 400;
+    int kinect2H = 300;
+    ofRectangle cur2;
  #endif
       
     // my stuff
-    int multX;
-	int multY;
+    float multX;
+	float multY;
     
     bool calibrateMode;
     bool bezelHelperMode;
@@ -83,18 +85,25 @@ public:
     ofImage testPattern;
     ofImage bezelHelper;
     
-    
-    ofSerial	serial;
-    string sss;
-    
+
     float gapWidth =140;
     
-    int pointerX;
-    int pointerY;
+    float pointerX;
+    float pointerY;
     
-    int projectorWidth;
-    int projectorHeight;
-
+    float projectorWidth;
+    float projectorHeight;
+    
+    float blobX;
+    float blobY;
+    
+    bool anyBlobs;
+    
+    int durationTime = 3000;
+    int startTime;
+    int futureTime;
+    bool timeNotFinished = true;
+    
     
     // gui
     ofxUISuperCanvas *gui;
