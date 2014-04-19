@@ -33,8 +33,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-            BuildableName = "kinectExample.app"
-            BlueprintName = "kinectExample"
+            BuildableName = "blade.app"
+            BlueprintName = "blade"
             ReferencedContainer = "container:blade.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -52,8 +52,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-            BuildableName = "kinectExample.app"
-            BlueprintName = "kinectExample"
+            BuildableName = "blade.app"
+            BlueprintName = "blade"
             ReferencedContainer = "container:blade.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
